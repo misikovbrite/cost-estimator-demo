@@ -963,6 +963,14 @@
   .scan-corner.bl { bottom: 0; left: 0; border-bottom-width: 3px; border-left-width: 3px; border-radius: 0 0 0 6px; }
   .scan-corner.br { bottom: 0; right: 0; border-bottom-width: 3px; border-right-width: 3px; border-radius: 0 0 6px 0; }
 
+  .preset-btn {
+    padding: 6px 10px; border-radius: 8px; border: 1px solid #3A3A3C;
+    background: #3A3A3C; color: #CCC; font-size: 12px; font-weight: 500;
+    font-family: inherit; cursor: pointer; text-align: left;
+    transition: all 0.15s;
+  }
+  .preset-btn:hover { background: #4A4A4C; color: white; }
+
   .color-dot {
     width: 26px; height: 26px; border-radius: 50%; cursor: pointer;
     border: 3px solid transparent; transition: all 0.15s;
@@ -1024,6 +1032,16 @@
   box-shadow: 0 4px 16px rgba(0,0,0,0.3);
   font-family: -apple-system, sans-serif; width: 240px;
 ">
+  <div style="font-size:11px; font-weight:600; color:#8E8E93; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Presets</div>
+  <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:10px;">
+    <button class="preset-btn" data-task="Ceiling leak repair — hole in drywall from water damage" onclick="selectPreset(this)">Ceiling Leak</button>
+    <button class="preset-btn" data-task="Kitchen faucet replacement and under-sink plumbing repair" onclick="selectPreset(this)">Faucet Replace</button>
+    <button class="preset-btn" data-task="Bathroom tile floor replacement, 80 sq ft, including demo and new tile" onclick="selectPreset(this)">Bathroom Tile</button>
+    <button class="preset-btn" data-task="Interior painting of living room and hallway, 400 sq ft walls, 2 coats" onclick="selectPreset(this)">Room Painting</button>
+    <button class="preset-btn" data-task="Wooden fence repair — 3 broken posts and 12 damaged pickets, 30 ft section" onclick="selectPreset(this)">Fence Repair</button>
+    <button class="preset-btn" data-task="Garage door opener installation with new motor and safety sensors" onclick="selectPreset(this)">Garage Door</button>
+    <button class="preset-btn" data-task="Deck staining and sealing — 200 sq ft composite deck, power wash + 2 coats" onclick="selectPreset(this)">Deck Staining</button>
+  </div>
   <div style="font-size:11px; font-weight:600; color:#8E8E93; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Language</div>
   <div id="langPicker" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:10px;">
     <button class="lang-btn lang-active" data-lang="en" onclick="selectLang(this)">EN</button>
@@ -1128,6 +1146,87 @@ function startScanAnimation() {
   line.style.animation = 'none';
   line.offsetHeight;
   line.style.animation = 'scanDown 4s linear infinite';
+}
+
+// ─── Language ───
+let currentLang = 'en';
+const UI_STRINGS = {
+  en: { header: 'Cost Estimator', scope: 'Scope of Work', labor: 'Labor', materials: 'Materials', hours: 'Hours', workers: 'Workers', rate: 'Rate', total: 'Total', totals: 'Totals', subtotal: 'Subtotal', markup: 'Markup', tax: 'Tax', grandTotal: 'Grand Total', notes: 'Notes', send: 'Send Estimate', analyzing: 'Analyzing Photo...', building: 'Building Your Estimate...', confidence: 'confidence' },
+  es: { header: 'Estimador de Costos', scope: 'Alcance del Trabajo', labor: 'Mano de Obra', materials: 'Materiales', hours: 'Horas', workers: 'Trabajadores', rate: 'Tarifa', total: 'Total', totals: 'Totales', subtotal: 'Subtotal', markup: 'Margen', tax: 'Impuesto', grandTotal: 'Total General', notes: 'Notas', send: 'Enviar Presupuesto', analyzing: 'Analizando Foto...', building: 'Creando su Presupuesto...', confidence: 'confianza' },
+  ar: { header: 'مقدّر التكلفة', scope: 'نطاق العمل', labor: 'العمالة', materials: 'المواد', hours: 'ساعات', workers: 'عمّال', rate: 'السعر', total: 'المجموع', totals: 'الإجماليات', subtotal: 'المجموع الفرعي', markup: 'هامش الربح', tax: 'الضريبة', grandTotal: 'المجموع الكلي', notes: 'ملاحظات', send: 'إرسال التقدير', analyzing: '...تحليل الصورة', building: '...إنشاء التقدير', confidence: 'ثقة' },
+  de: { header: 'Kostenschätzer', scope: 'Arbeitsumfang', labor: 'Arbeit', materials: 'Materialien', hours: 'Stunden', workers: 'Arbeiter', rate: 'Stundensatz', total: 'Gesamt', totals: 'Summen', subtotal: 'Zwischensumme', markup: 'Aufschlag', tax: 'Steuer', grandTotal: 'Gesamtsumme', notes: 'Hinweise', send: 'Kostenvoranschlag senden', analyzing: 'Foto wird analysiert...', building: 'Kostenvoranschlag wird erstellt...', confidence: 'Vertrauen' },
+  fr: { header: 'Estimateur de Coûts', scope: 'Portée des Travaux', labor: "Main-d'œuvre", materials: 'Matériaux', hours: 'Heures', workers: 'Ouvriers', rate: 'Taux', total: 'Total', totals: 'Totaux', subtotal: 'Sous-total', markup: 'Marge', tax: 'Taxe', grandTotal: 'Total Général', notes: 'Notes', send: 'Envoyer le Devis', analyzing: 'Analyse de la Photo...', building: 'Création du Devis...', confidence: 'confiance' },
+  'pt-BR': { header: 'Estimador de Custos', scope: 'Escopo do Trabalho', labor: 'Mão de Obra', materials: 'Materiais', hours: 'Horas', workers: 'Trabalhadores', rate: 'Taxa', total: 'Total', totals: 'Totais', subtotal: 'Subtotal', markup: 'Margem', tax: 'Imposto', grandTotal: 'Total Geral', notes: 'Observações', send: 'Enviar Orçamento', analyzing: 'Analisando Foto...', building: 'Criando seu Orçamento...', confidence: 'confiança' }
+};
+const LANG_NAMES = { en: 'English', es: 'Spanish', ar: 'Arabic', de: 'German', fr: 'French', 'pt-BR': 'Brazilian Portuguese' };
+
+function selectLang(btn) {
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('lang-active'));
+  btn.classList.add('lang-active');
+  currentLang = btn.dataset.lang;
+  applyUILanguage(currentLang);
+}
+
+function applyUILanguage(lang) {
+  const s = UI_STRINGS[lang] || UI_STRINGS.en;
+  document.getElementById('phoneFrame').style.direction = lang === 'ar' ? 'rtl' : 'ltr';
+  // Headers
+  document.querySelectorAll('.app-header').forEach(h => {
+    const back = h.querySelector('.header-back');
+    const svg = back ? back.innerHTML : '';
+    h.innerHTML = (back ? '<span class="header-back">' + svg + '</span>' : '') + s.header;
+  });
+  // Section titles
+  document.querySelectorAll('.section-title').forEach(t => {
+    const txt = t.textContent;
+    if (txt.match(/Scope|Alcance|نطاق|Arbeitsumfang|Portée|Escopo/)) t.textContent = s.scope;
+    else if (txt.match(/^Labor|^Mano|^العمالة|^Arbeit|^Main|^Mão/)) t.textContent = s.labor;
+    else if (txt.match(/Material|المواد|Materialien|Matériaux|Materiais/)) t.textContent = s.materials;
+    else if (txt.match(/^Total|^الإجماليات|^Summen|^Totaux|^Totais/)) t.textContent = s.totals;
+    else if (txt.match(/Notes|Notas|ملاحظات|Hinweise|Observações/)) t.textContent = s.notes;
+  });
+  // Labor pills
+  const lp = document.querySelectorAll('.labor-pill .label');
+  if (lp[0]) lp[0].textContent = s.hours;
+  if (lp[1]) lp[1].textContent = s.workers;
+  if (lp[2]) lp[2].textContent = s.rate;
+  const lt = document.querySelector('.labor-total');
+  if (lt) lt.textContent = lt.textContent.replace(/^[^$:]+:?\s*/, s.total + ': ');
+  // Summary pills
+  const sp = document.querySelectorAll('.summary-pill .label');
+  if (sp[0]) sp[0].textContent = s.materials;
+  if (sp[1]) sp[1].textContent = s.labor;
+  // Grand total
+  const gt = document.querySelector('.grand-total .label');
+  if (gt) gt.textContent = s.grandTotal;
+  // Send buttons
+  document.querySelectorAll('.send-cta').forEach(b => {
+    if (!b.id || b.id !== 'generateBtn') b.textContent = s.send;
+  });
+  // Loading & scan
+  const loadT = document.getElementById('loadingTitle');
+  if (loadT) loadT.textContent = s.building;
+}
+
+// ─── Color ───
+function selectColor(dot) {
+  document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('color-active'));
+  dot.classList.add('color-active');
+  const c = dot.dataset.color;
+  const r = parseInt(c.slice(1,3),16), g = parseInt(c.slice(3,5),16), b = parseInt(c.slice(5,7),16);
+  const surf = 'rgb('+Math.round(r*.08+255*.92)+','+Math.round(g*.08+255*.92)+','+Math.round(b*.08+255*.92)+')';
+  document.documentElement.style.setProperty('--primary-blue', c);
+  document.documentElement.style.setProperty('--blue-surface', surf);
+  document.querySelectorAll('.header-back').forEach(el => el.style.color = c);
+  document.querySelectorAll('.scope-check').forEach(el => el.style.background = c);
+  document.querySelectorAll('.send-cta').forEach(el => el.style.background = c);
+  const gb = document.getElementById('generateBtn');
+  if (gb) gb.style.background = c;
+}
+
+// ─── Presets ───
+function selectPreset(btn) {
+  document.getElementById('taskInput').value = btn.dataset.task;
 }
 
 function loadScanPhoto(input) {
@@ -1663,114 +1762,6 @@ function sendEstimate() {
 </div><!-- /phone-frame -->
 
 <script>
-let currentLang = 'en';
-
-function selectColor(dot) {
-  document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('color-active'));
-  dot.classList.add('color-active');
-  const color = dot.dataset.color;
-
-  // Compute light surface color (10% opacity version)
-  const r = parseInt(color.slice(1,3),16), g = parseInt(color.slice(3,5),16), b = parseInt(color.slice(5,7),16);
-  const surface = `rgba(${r},${g},${b},0.08)`;
-  const surfaceSolid = `rgb(${Math.round(r*0.08+255*0.92)},${Math.round(g*0.08+255*0.92)},${Math.round(b*0.08+255*0.92)})`;
-
-  document.documentElement.style.setProperty('--primary-blue', color);
-  document.documentElement.style.setProperty('--blue-surface', surfaceSolid);
-
-  // Update header back arrow color
-  document.querySelectorAll('.header-back').forEach(b => b.style.color = color);
-
-  // Update scope checks
-  document.querySelectorAll('.scope-check').forEach(c => c.style.background = color);
-
-  // Update send button & generate button
-  document.querySelectorAll('.send-cta').forEach(b => b.style.background = color);
-  const genBtn = document.getElementById('generateBtn');
-  if (genBtn) genBtn.style.background = color;
-}
-
-const UI_STRINGS = {
-  en: { header: 'Cost Estimator', scope: 'Scope of Work', labor: 'Labor', materials: 'Materials', hours: 'Hours', workers: 'Workers', rate: 'Rate', total: 'Total', totals: 'Totals', subtotal: 'Subtotal', markup: 'Markup', tax: 'Tax', grandTotal: 'Grand Total', notes: 'Notes', send: 'Send Estimate', analyzing: 'Analyzing Photo...', building: 'Building Your Estimate...', confidence: 'confidence' },
-  es: { header: 'Estimador de Costos', scope: 'Alcance del Trabajo', labor: 'Mano de Obra', materials: 'Materiales', hours: 'Horas', workers: 'Trabajadores', rate: 'Tarifa', total: 'Total', totals: 'Totales', subtotal: 'Subtotal', markup: 'Margen', tax: 'Impuesto', grandTotal: 'Total General', notes: 'Notas', send: 'Enviar Presupuesto', analyzing: 'Analizando Foto...', building: 'Creando su Presupuesto...', confidence: 'confianza' },
-  ar: { header: 'مقدّر التكلفة', scope: 'نطاق العمل', labor: 'العمالة', materials: 'المواد', hours: 'ساعات', workers: 'عمّال', rate: 'السعر', total: 'المجموع', totals: 'الإجماليات', subtotal: 'المجموع الفرعي', markup: 'هامش الربح', tax: 'الضريبة', grandTotal: 'المجموع الكلي', notes: 'ملاحظات', send: 'إرسال التقدير', analyzing: '...تحليل الصورة', building: '...إنشاء التقدير', confidence: 'ثقة' },
-  de: { header: 'Kostenschätzer', scope: 'Arbeitsumfang', labor: 'Arbeit', materials: 'Materialien', hours: 'Stunden', workers: 'Arbeiter', rate: 'Stundensatz', total: 'Gesamt', totals: 'Summen', subtotal: 'Zwischensumme', markup: 'Aufschlag', tax: 'Steuer', grandTotal: 'Gesamtsumme', notes: 'Hinweise', send: 'Kostenvoranschlag senden', analyzing: 'Foto wird analysiert...', building: 'Kostenvoranschlag wird erstellt...', confidence: 'Vertrauen' },
-  fr: { header: 'Estimateur de Coûts', scope: 'Portée des Travaux', labor: 'Main-d\'œuvre', materials: 'Matériaux', hours: 'Heures', workers: 'Ouvriers', rate: 'Taux', total: 'Total', totals: 'Totaux', subtotal: 'Sous-total', markup: 'Marge', tax: 'Taxe', grandTotal: 'Total Général', notes: 'Notes', send: 'Envoyer le Devis', analyzing: 'Analyse de la Photo...', building: 'Création du Devis...', confidence: 'confiance' },
-  'pt-BR': { header: 'Estimador de Custos', scope: 'Escopo do Trabalho', labor: 'Mão de Obra', materials: 'Materiais', hours: 'Horas', workers: 'Trabalhadores', rate: 'Taxa', total: 'Total', totals: 'Totais', subtotal: 'Subtotal', markup: 'Margem', tax: 'Imposto', grandTotal: 'Total Geral', notes: 'Observações', send: 'Enviar Orçamento', analyzing: 'Analisando Foto...', building: 'Criando seu Orçamento...', confidence: 'confiança' }
-};
-
-const LANG_NAMES = { en: 'English', es: 'Spanish', ar: 'Arabic', de: 'German', fr: 'French', 'pt-BR': 'Brazilian Portuguese' };
-
-function selectLang(btn) {
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('lang-active'));
-  btn.classList.add('lang-active');
-  currentLang = btn.dataset.lang;
-  applyUILanguage(currentLang);
-}
-
-function applyUILanguage(lang) {
-  const s = UI_STRINGS[lang] || UI_STRINGS.en;
-  const isRTL = lang === 'ar';
-
-  // Set direction
-  document.getElementById('phoneFrame').style.direction = isRTL ? 'rtl' : 'ltr';
-
-  // Headers
-  document.querySelectorAll('.app-header').forEach(h => {
-    const back = h.querySelector('.header-back');
-    h.textContent = '';
-    if (back) h.appendChild(back);
-    h.appendChild(document.createTextNode(s.header));
-  });
-
-  // Section titles
-  document.querySelectorAll('.section-title').forEach(t => {
-    if (t.textContent.match(/Scope|Alcance|نطاق|Arbeitsumfang|Portée|Escopo/)) t.textContent = s.scope;
-    if (t.textContent.match(/Labor|Mano|العمالة|Arbeit|Main|Mão/)) t.textContent = s.labor;
-    if (t.textContent.match(/Material|المواد|Materialien|Matériaux|Materiais/)) t.textContent = s.materials;
-    if (t.textContent.match(/Total|الإجماليات|Summen|Totaux|Totais/)) t.textContent = s.totals;
-    if (t.textContent.match(/Notes|Notas|ملاحظات|Hinweise|Observações/)) t.textContent = s.notes;
-  });
-
-  // Labor pills
-  const laborLabels = document.querySelectorAll('.labor-pill .label');
-  if (laborLabels[0]) laborLabels[0].textContent = s.hours;
-  if (laborLabels[1]) laborLabels[1].textContent = s.workers;
-  if (laborLabels[2]) laborLabels[2].textContent = s.rate;
-  const laborTotal = document.querySelector('.labor-total');
-  if (laborTotal) laborTotal.textContent = laborTotal.textContent.replace(/^[^$]+/, s.total + ': ');
-
-  // Summary pills labels
-  const summaryLabels = document.querySelectorAll('.summary-pill .label');
-  if (summaryLabels[0]) summaryLabels[0].textContent = s.materials;
-  if (summaryLabels[1]) summaryLabels[1].textContent = s.labor;
-
-  // Totals labels
-  const totalLabels = document.querySelectorAll('.total-row .label');
-  totalLabels.forEach(l => {
-    if (l.textContent.match(/^Material/)) l.textContent = s.materials;
-    if (l.textContent.match(/^Labor|^Mano|^العمالة|^Arbeit|^Main|^Mão/)) l.textContent = s.labor;
-    if (l.textContent.match(/^Subtotal|^المجموع الفرعي|^Zwischen|^Sous/)) l.textContent = s.subtotal;
-  });
-  const gt = document.querySelector('.grand-total .label');
-  if (gt) gt.textContent = s.grandTotal;
-
-  // Send button
-  const sendBtns = document.querySelectorAll('.send-cta');
-  sendBtns.forEach(b => { if (b.textContent.match(/Send|Enviar|إرسال|senden|Envoyer/)) b.textContent = s.send; });
-
-  // Loading & scan text
-  const loadingTitle = document.getElementById('loadingTitle');
-  if (loadingTitle) loadingTitle.textContent = s.building;
-  const analyzingText = document.querySelector('.scan-body div[style]');
-  if (analyzingText) analyzingText.textContent = s.analyzing;
-
-  // Confidence badge
-  document.querySelectorAll('.confidence-badge').forEach(b => {
-    b.textContent = b.textContent.replace(/confidence|confianza|ثقة|Vertrauen|confiance|confiança/, s.confidence);
-  });
-}
-
 async function generateEstimate() {
   const taskDesc = document.getElementById('taskInput').value.trim();
   const apiKey = document.getElementById('apiKeyInput').value.trim();
