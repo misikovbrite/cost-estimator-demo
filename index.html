@@ -31,11 +31,14 @@
   }
 
   /* Phone frame */
+  .phone-frame, .phone-frame * {
+    cursor: none !important;
+  }
   .phone-frame {
     max-width: 430px;
     margin: 0 auto;
-    margin-top: 50px;
-    height: calc(100vh - 50px);
+    margin-top: 20px;
+    height: calc(100vh - 40px);
     background: var(--app-bg);
     position: relative;
     overflow: hidden;
@@ -96,7 +99,8 @@
     background: var(--card-bg);
     border-radius: 16px;
     padding: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    border: 0.5px solid var(--divider);
   }
 
   /* Summary card */
@@ -114,13 +118,13 @@
   .summary-total {
     font-size: 42px;
     font-weight: 700;
-    color: var(--primary-blue);
+    color: var(--text-primary);
     letter-spacing: -0.5px;
   }
   .confidence-badge {
-    font-size: 14px;
-    color: var(--primary-blue);
-    background: var(--blue-surface);
+    font-size: 13px;
+    color: var(--text-secondary);
+    background: #F2F2F7;
     padding: 4px 10px;
     border-radius: 8px;
     font-weight: 500;
@@ -132,7 +136,7 @@
   }
   .summary-pill {
     flex: 1;
-    background: var(--blue-surface);
+    background: #F2F2F7;
     border-radius: 8px;
     padding: 6px 0;
     text-align: center;
@@ -140,7 +144,7 @@
   .summary-pill .value {
     font-size: 16px;
     font-weight: 600;
-    color: var(--primary-blue);
+    color: var(--text-primary);
   }
   .summary-pill .label {
     font-size: 13px;
@@ -189,7 +193,7 @@
   .line-item-cost {
     font-size: 17px;
     font-weight: 600;
-    color: var(--primary-blue);
+    color: var(--text-primary);
   }
   .line-item-qty {
     font-size: 14px;
@@ -205,7 +209,7 @@
   }
   .labor-pill {
     flex: 1;
-    background: var(--blue-surface);
+    background: #F2F2F7;
     border-radius: 8px;
     padding: 8px 0;
     text-align: center;
@@ -223,7 +227,7 @@
   .labor-total {
     font-size: 20px;
     font-weight: 600;
-    color: var(--primary-blue);
+    color: var(--text-primary);
   }
 
   /* Totals */
@@ -259,7 +263,7 @@
   .grand-total .value {
     font-size: 24px;
     font-weight: 700;
-    color: var(--primary-blue);
+    color: var(--text-primary);
   }
 
   /* Scope section */
@@ -355,7 +359,10 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
+  .send-body::-webkit-scrollbar { display: none; }
 
   /* Estimate preview mini card */
   .send-preview {
@@ -979,6 +986,46 @@
   .color-dot:hover { transform: scale(1.15); }
   .color-dot.color-active { border-color: white; box-shadow: 0 0 0 2px rgba(255,255,255,0.4); }
 
+  /* Loading V2 — circle progress */
+  @keyframes circleProgress {
+    0% { stroke-dashoffset: 490; }
+    50% { stroke-dashoffset: 100; }
+    100% { stroke-dashoffset: 490; }
+  }
+
+  /* Loading V3 — step list */
+  .loading-steps { display:flex; flex-direction:column; gap:20px; }
+  .load-step {
+    display:flex; align-items:center; gap:14px;
+    font-size:17px; font-weight:500; color:var(--text-primary);
+    transition: opacity 0.3s;
+  }
+  .load-step.pending { opacity:0.35; }
+  .load-step.done { opacity:1; }
+  .load-step.done .load-step-icon svg { stroke: var(--primary-blue); }
+  .load-step-icon {
+    width:32px; height:32px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .load-step-icon.spinning { animation: spin 1.5s linear infinite; }
+  .load-step.done .load-step-icon {
+    background: var(--primary-blue);
+  }
+  .load-step.done .load-step-icon svg { stroke: white; }
+  .load-step.done .load-step-icon::after { display:none; }
+  @keyframes spin { 100% { transform: rotate(360deg); } }
+
+  /* Variant button */
+  .var-btn {
+    padding: 5px 10px; border-radius: 6px; border: 1.5px solid #3A3A3C;
+    background: transparent; color: #8E8E93; font-size: 11px; font-weight: 600;
+    font-family: inherit; cursor: pointer; transition: all 0.15s;
+  }
+  .var-btn.var-active {
+    background: #1565C0; border-color: #1565C0; color: white;
+  }
+
   .lang-btn {
     padding: 5px 10px; border-radius: 6px; border: 1.5px solid #3A3A3C;
     background: transparent; color: #8E8E93; font-size: 12px; font-weight: 700;
@@ -995,43 +1042,43 @@
 </head>
 <body>
 
-<!-- CONTROL PANEL (above phone frame) -->
-<div id="controlPanel" style="
-  position: fixed; top: 0; left: 50%; transform: translateX(-50%);
-  z-index: 99999; background: #1C1C1E; color: white;
-  display: flex; gap: 0; border-radius: 0 0 14px 14px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3); overflow: hidden;
-  font-family: -apple-system, sans-serif; font-size: 14px; font-weight: 600;
-">
-  <button onclick="showScreen('scan')" class="ctrl-btn" data-screen="scan" style="
-    padding: 10px 12px 10px 20px; border: none; background: transparent; color: white;
-    cursor: pointer; font: inherit; font-weight: 600; transition: all 0.2s;
-  ">Scan</button><label style="
-    padding: 10px 12px 10px 0; color: #64B5F6; cursor: pointer; font: inherit; font-weight: 600; font-size: 14px; display: flex; align-items: center;
-  "><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:2px;"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="13" r="4"/><path d="M5 3v2"/></svg><input type="file" accept="image/*" id="photoInput" style="display:none;" onchange="loadScanPhoto(this)">
-  </label>
-
-  <button onclick="showScreen('loading')" class="ctrl-btn" data-screen="loading" style="
-    padding: 10px 20px; border: none; background: transparent; color: #8E8E93;
-    cursor: pointer; font: inherit; font-weight: 600; transition: all 0.2s;
-  ">Loading</button>
-  <button onclick="showScreen('estimate')" class="ctrl-btn" data-screen="estimate" style="
-    padding: 10px 20px; border: none; background: transparent; color: #8E8E93;
-    cursor: pointer; font: inherit; font-weight: 600; transition: all 0.2s;
-  ">Estimate</button>
-  <button onclick="showScreen('send')" class="ctrl-btn" data-screen="send" style="
-    padding: 10px 20px; border: none; background: transparent; color: #8E8E93;
-    cursor: pointer; font: inherit; font-weight: 600; transition: all 0.2s;
-  ">Send</button>
-</div>
-<!-- Task input — right side panel -->
+<!-- Right side panel (screens + settings) -->
 <div id="taskPanel" style="
-  position: fixed; top: 80px; right: 20px;
+  position: fixed; top: 20px; right: 20px;
   z-index: 99998; background: #2C2C2E; color: white;
   border-radius: 12px; padding: 12px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.3);
   font-family: -apple-system, sans-serif; width: 240px;
 ">
+  <div style="font-size:11px; font-weight:600; color:#8E8E93; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Screens</div>
+  <div style="display:flex; gap:4px; margin-bottom:10px;">
+    <button class="ctrl-btn" data-screen="scan" onclick="showScreen('scan')" style="flex:1; padding:8px 4px; border:1.5px solid #3A3A3C; border-radius:8px; background:#3A3A3C; color:#CCC; font-size:11px; font-weight:600; font-family:inherit; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:3px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/><line x1="12" y1="3" x2="12" y2="21" stroke-dasharray="2 3"/></svg>
+      Scan
+    </button>
+    <button class="ctrl-btn" data-screen="loading" onclick="showScreen('loading')" style="flex:1; padding:8px 4px; border:1.5px solid #3A3A3C; border-radius:8px; background:#3A3A3C; color:#CCC; font-size:11px; font-weight:600; font-family:inherit; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:3px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+      Loading
+    </button>
+    <button class="ctrl-btn" data-screen="estimate" onclick="showScreen('estimate')" style="flex:1; padding:8px 4px; border:1.5px solid #3A3A3C; border-radius:8px; background:#3A3A3C; color:white; font-size:11px; font-weight:600; font-family:inherit; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:3px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><path d="M9 5a2 2 0 012-2h2a2 2 0 012 2"/><path d="M9 14l2 2 4-4"/></svg>
+      Estimate
+    </button>
+    <button class="ctrl-btn" data-screen="send" onclick="showScreen('send')" style="flex:1; padding:8px 4px; border:1.5px solid #3A3A3C; border-radius:8px; background:#3A3A3C; color:#CCC; font-size:11px; font-weight:600; font-family:inherit; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:3px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      Send
+    </button>
+  </div>
+  <label style="display:flex; align-items:center; gap:6px; padding:6px 10px; border-radius:8px; background:#3A3A3C; color:#CCC; font-size:12px; font-weight:500; cursor:pointer; margin-bottom:6px;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="13" r="4"/><path d="M5 3v2"/></svg>
+    Upload scan photo
+    <input type="file" accept="image/*" id="photoInput" style="display:none;" onchange="loadScanPhoto(this)">
+  </label>
+  <!-- Variations panel (shows when a screen with variants is selected) -->
+  <div id="variantPanel" style="margin-bottom:10px; display:none;">
+    <div style="font-size:11px; font-weight:600; color:#8E8E93; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:5px;">Variation</div>
+    <div id="variantButtons" style="display:flex; gap:4px; flex-wrap:wrap;"></div>
+  </div>
   <div style="font-size:11px; font-weight:600; color:#8E8E93; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Presets</div>
   <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:10px;">
     <button class="preset-btn" data-task="Ceiling leak repair — hole in drywall from water damage" onclick="selectPreset(this)">Ceiling Leak</button>
@@ -1041,6 +1088,11 @@
     <button class="preset-btn" data-task="Wooden fence repair — 3 broken posts and 12 damaged pickets, 30 ft section" onclick="selectPreset(this)">Fence Repair</button>
     <button class="preset-btn" data-task="Garage door opener installation with new motor and safety sensors" onclick="selectPreset(this)">Garage Door</button>
     <button class="preset-btn" data-task="Deck staining and sealing — 200 sq ft composite deck, power wash + 2 coats" onclick="selectPreset(this)">Deck Staining</button>
+    <button class="preset-btn" data-task="Clean roof, gutters and pressure wash siding — 2-story house, vinyl siding, 150 ft gutters" onclick="selectPreset(this)">Roof & Gutter Clean</button>
+    <button class="preset-btn" data-task="Full bathroom remodel — gut existing bathroom, new tile, vanity, shower, toilet, plumbing and electrical" onclick="selectPreset(this)">Bathroom Remodel</button>
+    <button class="preset-btn" data-task="Toilet replacement — remove old toilet, install new one, replace wax ring and supply line" onclick="selectPreset(this)">Toilet Replace</button>
+    <button class="preset-btn" data-task="Full basement buildout — framing, insulation, drywall, flooring, electrical, plumbing, egress window, bathroom" onclick="selectPreset(this)">Basement Buildout</button>
+    <button class="preset-btn" data-task="Kitchen remodel — demo existing cabinets, new cabinets, countertops, backsplash, appliances, plumbing, electrical, flooring" onclick="selectPreset(this)">Kitchen Remodel</button>
   </div>
   <div style="font-size:11px; font-weight:600; color:#8E8E93; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Language</div>
   <div id="langPicker" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:10px;">
@@ -1079,7 +1131,7 @@
     background: #1565C0; color: white; font-size: 14px; font-weight: 700;
     font-family: inherit; cursor: pointer;
   ">Generate Estimate</button>
-  <div id="genStatus" style="font-size: 11px; color: #8E8E93; margin-top: 6px; text-align: center;"></div>
+  <div id="genStatus" style="display:none;"></div>
 </div>
 
 <script>
@@ -1092,9 +1144,16 @@ function showScreen(screen) {
   document.querySelectorAll('.ctrl-btn').forEach(b => b.style.color = '#8E8E93');
   document.querySelector(`.ctrl-btn[data-screen="${screen}"]`).style.color = 'white';
 
+  // Show variant panel if applicable
+  showVariants(screen);
+
   // Hide all overlays first
   scanOverlay.classList.add('fade-out');
   overlay.classList.add('fade-out');
+  ['loadingV2','loadingV3'].forEach(id => {
+    const el = document.getElementById(id);
+    el.style.display = 'none'; el.classList.add('fade-out');
+  });
   sendOverlay.classList.remove('visible');
 
   if (screen === 'scan') {
@@ -1104,34 +1163,55 @@ function showScreen(screen) {
       scanOverlay.style.opacity = '1';
     }, 50);
     overlay.style.display = 'none';
+    ['estimateV1','estimateV2','estimateV3','estimateV4'].forEach(id => document.getElementById(id).style.display = 'none');
     // Reset and replay scan animation
     startScanAnimation();
   } else if (screen === 'loading') {
     scanOverlay.style.display = 'none';
-    overlay.style.display = 'flex';
-    overlay.style.opacity = '1';
-    overlay.style.transform = 'none';
-    overlay.classList.remove('fade-out');
-    // Reset clipboard animation
-    document.querySelectorAll('.check-row').forEach(r => {
-      r.classList.remove('visible');
-      r.querySelector('.check-bar-fill').classList.remove('filling');
-      r.querySelector('.check-circle').classList.remove('checked');
+    ['estimateV1','estimateV2','estimateV3','estimateV4'].forEach(id => document.getElementById(id).style.display = 'none');
+    // Hide all loading variants
+    ['loadingOverlay','loadingV2','loadingV3'].forEach(id => {
+      const el = document.getElementById(id);
+      el.style.display = 'none';
+      el.classList.add('fade-out');
     });
-    const rows = document.querySelectorAll('.check-row');
-    rows.forEach((row, i) => {
-      setTimeout(() => {
-        row.classList.add('visible');
-        row.querySelector('.check-bar-fill').classList.add('filling');
-        setTimeout(() => row.querySelector('.check-circle').classList.add('checked'), 500);
-      }, 600 + i * 450);
-    });
+    // Show selected variant
+    const vi = currentVariant.loading || 0;
+    const variants = SCREEN_VARIANTS.loading;
+    const activeEl = document.getElementById(variants[vi].id);
+    activeEl.style.display = 'flex';
+    activeEl.style.opacity = '1';
+    activeEl.style.transform = 'none';
+    activeEl.classList.remove('fade-out');
+    // Animate based on variant
+    if (vi === 0) {
+      document.querySelectorAll('.check-row').forEach(r => {
+        r.classList.remove('visible');
+        r.querySelector('.check-bar-fill').classList.remove('filling');
+        r.querySelector('.check-circle').classList.remove('checked');
+      });
+      document.querySelectorAll('.check-row').forEach((row, i) => {
+        setTimeout(() => {
+          row.classList.add('visible');
+          row.querySelector('.check-bar-fill').classList.add('filling');
+          setTimeout(() => row.querySelector('.check-circle').classList.add('checked'), 500);
+        }, 600 + i * 450);
+      });
+    } else if (vi === 2) {
+      animateLoadingV3();
+    }
   } else if (screen === 'estimate') {
     scanOverlay.style.display = 'none';
-    setTimeout(() => overlay.style.display = 'none', 400);
+    ['loadingOverlay','loadingV2','loadingV3'].forEach(id => document.getElementById(id).style.display = 'none');
+    // Show selected estimate variant
+    const evi = currentVariant.estimate || 0;
+    ['estimateV1','estimateV2','estimateV3','estimateV4'].forEach((id, i) => {
+      document.getElementById(id).style.display = i === evi ? 'block' : 'none';
+    });
   } else if (screen === 'send') {
     scanOverlay.style.display = 'none';
-    setTimeout(() => overlay.style.display = 'none', 400);
+    ['loadingOverlay','loadingV2','loadingV3'].forEach(id => document.getElementById(id).style.display = 'none');
+    ['estimateV1','estimateV2','estimateV3','estimateV4'].forEach(id => document.getElementById(id).style.display = 'none');
     sendOverlay.classList.add('visible');
     const btn = sendOverlay.querySelector('.send-cta');
     btn.textContent = 'Send Estimate';
@@ -1267,6 +1347,72 @@ function selectPreset(btn) {
   document.getElementById('taskInput').value = btn.dataset.task;
 }
 
+// ─── Variants ───
+const SCREEN_VARIANTS = {
+  loading: [
+    { id: 'loadingOverlay', label: 'Clipboard' },
+    { id: 'loadingV2', label: 'Circle' },
+    { id: 'loadingV3', label: 'Steps' }
+  ],
+  estimate: [
+    { id: 'estimateV1', label: 'Full' },
+    { id: 'estimateV2', label: 'Clean' },
+    { id: 'estimateV3', label: 'Compact' },
+    { id: 'estimateV4', label: 'Plain' }
+  ]
+};
+let currentVariant = {};
+
+function showVariants(screen) {
+  const panel = document.getElementById('variantPanel');
+  const btns = document.getElementById('variantButtons');
+  const variants = SCREEN_VARIANTS[screen];
+  if (!variants) { panel.style.display = 'none'; return; }
+  panel.style.display = 'block';
+  btns.innerHTML = '';
+  variants.forEach((v, i) => {
+    const active = (currentVariant[screen] || 0) === i;
+    const b = document.createElement('button');
+    b.className = 'var-btn' + (active ? ' var-active' : '');
+    b.textContent = v.label;
+    b.onclick = () => {
+      currentVariant[screen] = i;
+      showScreen(screen);
+    };
+    btns.appendChild(b);
+  });
+}
+
+function animateLoadingV3() {
+  const steps = document.querySelectorAll('#loadingSteps .load-step');
+  steps.forEach(s => { s.classList.remove('done'); s.classList.add('pending'); });
+  const checkSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M5 12l5 5L20 7"/></svg>';
+  const spinSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-blue)" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>';
+
+  steps.forEach((step, i) => {
+    setTimeout(() => {
+      // Current step: spinning
+      step.classList.remove('pending');
+      step.querySelector('.load-step-icon').innerHTML = spinSvg;
+      step.querySelector('.load-step-icon').classList.add('spinning');
+      // Previous step: done
+      if (i > 0) {
+        const prev = steps[i-1];
+        prev.classList.add('done');
+        prev.querySelector('.load-step-icon').classList.remove('spinning');
+        prev.querySelector('.load-step-icon').innerHTML = checkSvg;
+      }
+    }, i * 1200);
+  });
+  // Final step done
+  setTimeout(() => {
+    const last = steps[steps.length-1];
+    last.classList.add('done');
+    last.querySelector('.load-step-icon').classList.remove('spinning');
+    last.querySelector('.load-step-icon').innerHTML = checkSvg;
+  }, steps.length * 1200);
+}
+
 function loadScanPhoto(input) {
   const file = input.files && input.files[0];
   if (!file) return;
@@ -1354,6 +1500,44 @@ function loadScanPhoto(input) {
   </div>
 </div>
 
+<!-- LOADING VARIANT 2: Progress circle -->
+<div class="loading-overlay" id="loadingV2" style="display:none;">
+  <div class="app-header"><span class="header-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 4l-8 8 8 8"/></svg></span>Cost Estimator</div>
+  <div class="loading-body">
+    <div class="loading-status">
+      <h2 id="loadingTitleV2">Building Your Estimate...</h2>
+    </div>
+    <div style="position:relative; width:180px; height:180px;">
+      <svg width="180" height="180" viewBox="0 0 180 180" style="transform:rotate(-90deg);">
+        <circle cx="90" cy="90" r="78" stroke="#E8E8ED" stroke-width="10" fill="none"/>
+        <circle cx="90" cy="90" r="78" stroke="var(--primary-blue)" stroke-width="10" fill="none"
+          stroke-dasharray="490" stroke-dashoffset="490" stroke-linecap="round"
+          style="animation: circleProgress 3s ease-in-out infinite;">
+        </circle>
+      </svg>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--primary-blue)" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><path d="M9 5a2 2 0 012-2h2a2 2 0 012 2"/><path d="M9 14l2 2 4-4"/></svg>
+      </div>
+    </div>
+    <div style="font-size:15px; color:var(--text-secondary); margin-top:8px;">Calculating materials & labor...</div>
+  </div>
+</div>
+
+<!-- LOADING VARIANT 3: Step list -->
+<div class="loading-overlay" id="loadingV3" style="display:none;">
+  <div class="app-header"><span class="header-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 4l-8 8 8 8"/></svg></span>Cost Estimator</div>
+  <div class="loading-body" style="align-items:stretch; padding:40px 36px;">
+    <div style="font-size:22px; font-weight:700; color:var(--text-primary); margin-bottom:30px; text-align:center;" id="loadingTitleV3">Building Your Estimate...</div>
+    <div class="loading-steps" id="loadingSteps">
+      <div class="load-step" data-step="0"><div class="load-step-icon spinning"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-blue)" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div><span>Analyzing project description</span></div>
+      <div class="load-step pending" data-step="1"><div class="load-step-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></div><span>Calculating material costs</span></div>
+      <div class="load-step pending" data-step="2"><div class="load-step-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></div><span>Estimating labor hours</span></div>
+      <div class="load-step pending" data-step="3"><div class="load-step-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></div><span>Applying markup & tax</span></div>
+      <div class="load-step pending" data-step="4"><div class="load-step-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></div><span>Generating final estimate</span></div>
+    </div>
+  </div>
+</div>
+
 <script>
 // Start on estimate screen
 document.querySelector('.ctrl-btn[data-screen="estimate"]').style.color = 'white';
@@ -1363,7 +1547,7 @@ document.querySelector('.ctrl-btn[data-screen="estimate"]').style.color = 'white
 <div class="app-header"><span class="header-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 4l-8 8 8 8"/></svg></span>Cost Estimator</div>
 
 <!-- Scrollable content area -->
-<div class="phone-scroll">
+<div class="phone-scroll" id="estimateV1">
 
 <!-- Content -->
 <div class="content">
@@ -1641,7 +1825,187 @@ document.querySelector('.ctrl-btn[data-screen="estimate"]').style.color = 'white
   </button>
 </div>
 
-</div><!-- /phone-scroll -->
+</div><!-- /phone-scroll estimateV1 -->
+
+<!-- ESTIMATE V2: Clean -->
+<div class="phone-scroll" id="estimateV2" style="display:none;">
+<div class="content">
+
+  <!-- Big total hero -->
+  <div class="card" style="text-align:center; padding:28px 16px;">
+    <div class="summary-type est2-type">Water Damage / Ceiling Repair</div>
+    <div class="summary-total est2-total" style="margin:8px 0;">$2,890.44</div>
+    <div class="confidence-badge est2-badge" style="display:inline-block;">High confidence</div>
+  </div>
+
+  <!-- Materials simple list -->
+  <div class="card">
+    <div class="section-header"><span class="section-title est2-mat-title">Materials</span></div>
+    <div id="est2Materials">
+      <div class="line-item"><div class="line-item-left"><div class="line-item-desc">1/2" Drywall Sheets (4×8 ft)</div></div><div class="line-item-right"><div class="line-item-cost">$78.00</div></div></div>
+      <div class="line-item"><div class="line-item-left"><div class="line-item-desc">Joint Compound (5 gal)</div></div><div class="line-item-right"><div class="line-item-cost">$34.50</div></div></div>
+      <div class="line-item"><div class="line-item-left"><div class="line-item-desc">R-30 Fiberglass Insulation</div></div><div class="line-item-right"><div class="line-item-cost">$145.00</div></div></div>
+      <div class="line-item"><div class="line-item-left"><div class="line-item-desc">Mold-Killing Primer</div></div><div class="line-item-right"><div class="line-item-cost">$42.00</div></div></div>
+      <div class="line-item"><div class="line-item-left"><div class="line-item-desc">Ceiling Paint, Flat White</div></div><div class="line-item-right"><div class="line-item-cost">$68.00</div></div></div>
+    </div>
+  </div>
+
+  <!-- Labor -->
+  <div class="card">
+    <div class="section-header"><span class="section-title est2-labor-title">Labor</span></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:17px;color:var(--text-secondary);" class="est2-labor-desc">12 hrs × 2 workers × $45/hr</span>
+      <span style="font-size:20px;font-weight:700;color:var(--primary-blue);" class="est2-labor-val">$1,080.00</span>
+    </div>
+  </div>
+
+  <!-- Grand total -->
+  <div class="card" style="padding:20px;">
+    <div class="grand-total">
+      <span class="label est2-gt-label">Grand Total</span>
+      <span class="value est2-gt-val">$2,890.44</span>
+    </div>
+  </div>
+
+  <div style="padding: 0 0 30px;">
+    <button class="send-cta" onclick="document.getElementById('sendOverlay').classList.add('visible')">Send Estimate</button>
+  </div>
+</div>
+</div><!-- /phone-scroll estimateV2 -->
+
+<!-- ESTIMATE V3: Compact card -->
+<div class="phone-scroll" id="estimateV3" style="display:none;">
+<div class="content">
+
+  <!-- Single overview card -->
+  <div class="card" style="padding:24px;">
+    <div class="est3-type" style="font-size:14px; color:var(--text-secondary); margin-bottom:4px;">Water Damage / Ceiling Repair</div>
+    <div class="est3-name" style="font-size:24px; font-weight:700; color:var(--text-primary); margin-bottom:16px;">Ceiling Leak Repair</div>
+
+    <div style="display:flex; gap:12px; margin-bottom:20px;">
+      <div style="flex:1; text-align:center; padding:14px 0; background:var(--blue-surface); border-radius:12px;">
+        <div style="font-size:22px; font-weight:700; color:var(--primary-blue);" class="est3-mat-val">$984</div>
+        <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;" class="est3-mat-lbl">Materials</div>
+      </div>
+      <div style="flex:1; text-align:center; padding:14px 0; background:var(--blue-surface); border-radius:12px;">
+        <div style="font-size:22px; font-weight:700; color:var(--primary-blue);" class="est3-lab-val">$1,080</div>
+        <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;" class="est3-lab-lbl">Labor</div>
+      </div>
+      <div style="flex:1; text-align:center; padding:14px 0; background:var(--blue-surface); border-radius:12px;">
+        <div style="font-size:22px; font-weight:700; color:var(--primary-blue);">15%</div>
+        <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">Markup</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div style="display:flex; justify-content:space-between; padding:12px 0 4px;">
+      <span style="font-size:14px; color:var(--text-secondary);" class="est3-sub-lbl">Subtotal</span>
+      <span style="font-size:14px; color:var(--text-primary);" class="est3-sub-val">$2,349.00</span>
+    </div>
+    <div style="display:flex; justify-content:space-between; padding:4px 0;">
+      <span style="font-size:14px; color:var(--text-secondary);">Markup + Tax</span>
+      <span style="font-size:14px; color:var(--text-primary);" class="est3-tax-val">$541.44</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0 0;">
+      <span style="font-size:20px; font-weight:700;" class="est3-gt-lbl">Grand Total</span>
+      <span style="font-size:28px; font-weight:800; color:var(--primary-blue);" class="est3-gt-val">$2,890.44</span>
+    </div>
+  </div>
+
+  <!-- Scope compact -->
+  <div class="card">
+    <div class="section-header"><span class="section-title">Scope of Work</span></div>
+    <div id="est3Scope">
+      <div class="scope-item"><div class="scope-check"><svg viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M3 7l3 3 5-5.5"/></svg></div><span class="scope-text">Remove damaged drywall</span></div>
+      <div class="scope-item"><div class="scope-check"><svg viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M3 7l3 3 5-5.5"/></svg></div><span class="scope-text">Treat mold & replace insulation</span></div>
+      <div class="scope-item"><div class="scope-check"><svg viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M3 7l3 3 5-5.5"/></svg></div><span class="scope-text">Install new drywall, prime & paint</span></div>
+    </div>
+  </div>
+
+  <!-- Notes compact -->
+  <div class="card">
+    <div class="section-header"><span class="section-title">Notes</span></div>
+    <div class="note-item">
+      <svg class="note-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 3a1 1 0 110 2 1 1 0 010-2zm1 4v4a1 1 0 11-2 0V8a1 1 0 112 0z"/></svg>
+      <span class="note-text est3-note">Plumbing repair not included.</span>
+    </div>
+  </div>
+
+  <div style="padding: 0 0 30px;">
+    <button class="send-cta" onclick="document.getElementById('sendOverlay').classList.add('visible')">Send Estimate</button>
+  </div>
+</div>
+</div><!-- /phone-scroll estimateV3 -->
+
+<!-- ESTIMATE V4: Plain list -->
+<div class="phone-scroll" id="estimateV4" style="display:none;">
+<div style="padding:20px 20px 100px; font-family:inherit; color:var(--text-primary); line-height:1.6;">
+
+  <div style="font-size:24px; font-weight:700; margin-bottom:4px;" class="est4-name">Ceiling Leak Repair</div>
+  <div style="font-size:14px; color:var(--text-secondary); margin-bottom:20px;" class="est4-type">Water Damage / Ceiling Repair</div>
+
+  <div style="height:1px; background:var(--divider); margin:16px 0;"></div>
+
+  <div style="font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-secondary); margin-bottom:8px;">Scope of Work</div>
+  <ul id="est4Scope" style="margin:0 0 20px 18px; font-size:15px; color:var(--text-primary);">
+    <li>Remove water-damaged drywall section (~6×4 ft)</li>
+    <li>Treat wood framing for mold</li>
+    <li>Replace insulation and install new drywall</li>
+    <li>Sand, prime, and paint to match ceiling</li>
+  </ul>
+
+  <div style="height:1px; background:var(--divider); margin:16px 0;"></div>
+
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+    <div style="font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-secondary);">Materials</div>
+    <div style="font-size:13px; font-weight:600; color:var(--primary-blue); cursor:pointer;">+ Add</div>
+  </div>
+  <table id="est4Materials" style="width:100%; font-size:14px; margin-bottom:20px; border-collapse:collapse;">
+    <tr style="border-bottom:1px solid var(--divider);"><td style="padding:6px 0;">1/2" Drywall Sheets (4×8 ft)</td><td style="text-align:right; padding:6px 0; white-space:nowrap;">3 × $26.00</td><td style="text-align:right; padding:6px 0; font-weight:600; white-space:nowrap; padding-left:12px;">$78.00</td></tr>
+    <tr style="border-bottom:1px solid var(--divider);"><td style="padding:6px 0;">Joint Compound (5 gal)</td><td style="text-align:right; padding:6px 0; white-space:nowrap;">2 × $17.25</td><td style="text-align:right; padding:6px 0; font-weight:600; white-space:nowrap; padding-left:12px;">$34.50</td></tr>
+    <tr style="border-bottom:1px solid var(--divider);"><td style="padding:6px 0;">R-30 Fiberglass Insulation</td><td style="text-align:right; padding:6px 0; white-space:nowrap;">1 × $145.00</td><td style="text-align:right; padding:6px 0; font-weight:600; white-space:nowrap; padding-left:12px;">$145.00</td></tr>
+    <tr style="border-bottom:1px solid var(--divider);"><td style="padding:6px 0;">Mold-Killing Primer</td><td style="text-align:right; padding:6px 0; white-space:nowrap;">1 × $42.00</td><td style="text-align:right; padding:6px 0; font-weight:600; white-space:nowrap; padding-left:12px;">$42.00</td></tr>
+    <tr style="border-bottom:1px solid var(--divider);"><td style="padding:6px 0;">Ceiling Paint, Flat White</td><td style="text-align:right; padding:6px 0; white-space:nowrap;">2 × $34.00</td><td style="text-align:right; padding:6px 0; font-weight:600; white-space:nowrap; padding-left:12px;">$68.00</td></tr>
+    <tr><td style="padding:6px 0;">Tape, Screws & Supplies</td><td style="text-align:right; padding:6px 0; white-space:nowrap;">1 set</td><td style="text-align:right; padding:6px 0; font-weight:600; white-space:nowrap; padding-left:12px;">$44.00</td></tr>
+  </table>
+
+  <div style="height:1px; background:var(--divider); margin:16px 0;"></div>
+
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+    <div style="font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-secondary);">Labor</div>
+    <div style="font-size:13px; font-weight:600; color:var(--primary-blue); cursor:pointer;">+ Add</div>
+  </div>
+  <div style="font-size:15px; margin-bottom:20px;" class="est4-labor">12 hours × 2 workers × $45/hr = <strong>$1,080.00</strong></div>
+
+  <div style="height:1px; background:var(--divider); margin:16px 0;"></div>
+
+  <div style="font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-secondary); margin-bottom:8px;">Summary</div>
+  <table style="width:100%; font-size:15px; margin-bottom:20px; border-collapse:collapse;">
+    <tr><td style="padding:4px 0; color:var(--text-secondary);">Materials</td><td style="text-align:right; padding:4px 0;" class="est4-s-mat">$984.00</td></tr>
+    <tr><td style="padding:4px 0; color:var(--text-secondary);">Labor</td><td style="text-align:right; padding:4px 0;" class="est4-s-lab">$1,080.00</td></tr>
+    <tr><td style="padding:4px 0; color:var(--text-secondary);">Equipment</td><td style="text-align:right; padding:4px 0;" class="est4-s-eq">$210.00</td></tr>
+    <tr style="border-top:1px solid var(--divider);"><td style="padding:6px 0; color:var(--text-secondary);">Subtotal</td><td style="text-align:right; padding:6px 0; font-weight:600;" class="est4-s-sub">$2,349.00</td></tr>
+    <tr><td style="padding:4px 0; color:var(--text-secondary);">Markup (15%)</td><td style="text-align:right; padding:4px 0;" class="est4-s-markup">$352.35</td></tr>
+    <tr><td style="padding:4px 0; color:var(--text-secondary);">Tax (7%)</td><td style="text-align:right; padding:4px 0;" class="est4-s-tax">$189.09</td></tr>
+    <tr style="border-top:2px solid var(--text-primary);"><td style="padding:8px 0; font-size:18px; font-weight:700;">Grand Total</td><td style="text-align:right; padding:8px 0; font-size:18px; font-weight:700; color:var(--primary-blue);" class="est4-gt">$2,890.44</td></tr>
+  </table>
+
+  <div style="height:1px; background:var(--divider); margin:16px 0;"></div>
+
+  <div style="font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-secondary); margin-bottom:8px;">Notes</div>
+  <ul id="est4Notes" style="margin:0 0 20px 18px; font-size:14px; color:var(--text-secondary);">
+    <li>Plumbing repair not included.</li>
+    <li>Dry-out period may extend 1–2 extra days.</li>
+    <li>Pricing based on Austin, TX metro area rates.</li>
+  </ul>
+
+  <button class="send-cta" onclick="document.getElementById('sendOverlay').classList.add('visible')">Send Estimate</button>
+</div>
+</div><!-- /phone-scroll estimateV4 -->
 
 <!-- Send Estimate Screen -->
 <div class="send-overlay" id="sendOverlay">
