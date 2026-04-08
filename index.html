@@ -1815,7 +1815,16 @@ RULES:
 - Calculate all totals accurately
 - Return ONLY valid JSON`;
 
-  const langInstruction = currentLang !== 'en' ? '\n\nIMPORTANT: Generate ALL text content (estimate_name, project_type, descriptions, notes, recommendations, scope_items) in ' + LANG_NAMES[currentLang] + '. JSON keys must stay in English.' : '';
+  const LANG_CURRENCY = { en: 'USD ($)', es: 'USD ($)', ar: 'SAR (ر.س)', de: 'EUR (€)', fr: 'EUR (€)', 'pt-BR': 'BRL (R$)' };
+  const LANG_COUNTRY = { en: 'United States', es: 'United States (Hispanic market)', ar: 'Saudi Arabia', de: 'Germany', fr: 'France', 'pt-BR': 'Brazil' };
+  const currency = LANG_CURRENCY[currentLang] || 'USD ($)';
+  const country = LANG_COUNTRY[currentLang] || 'United States';
+  const langInstruction = currentLang !== 'en' ? `\n\nCRITICAL LANGUAGE & LOCALIZATION RULES:
+- Write ALL text content in ${LANG_NAMES[currentLang]}: estimate_name, project_type, every line item description, every note, every recommendation, every scope_item
+- Use local pricing for ${country} in ${currency}
+- Use local units of measurement common in ${country}
+- JSON keys stay in English, but ALL values that are text MUST be in ${LANG_NAMES[currentLang]}
+- Do NOT mix languages — everything the end user sees must be in ${LANG_NAMES[currentLang]}` : '';
 
   try {
     const resp = await fetch('https://api.openai.com/v1/chat/completions', {
