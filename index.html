@@ -34,8 +34,8 @@
   .phone-frame {
     max-width: 430px;
     margin: 0 auto;
-    margin-top: 60px;
-    height: calc(100vh - 60px);
+    margin-top: 50px;
+    height: calc(100vh - 50px);
     background: var(--app-bg);
     position: relative;
     overflow: hidden;
@@ -964,7 +964,7 @@
   .scan-corner.br { bottom: 0; right: 0; border-bottom-width: 3px; border-right-width: 3px; border-radius: 0 0 6px 0; }
 
   @media (max-width: 430px) {
-    .phone-frame { margin-top: 50px; }
+    .phone-frame { margin-top: 80px; height: calc(100vh - 80px); }
   }
 </style>
 </head>
@@ -979,9 +979,12 @@
   font-family: -apple-system, sans-serif; font-size: 14px; font-weight: 600;
 ">
   <button onclick="showScreen('scan')" class="ctrl-btn" data-screen="scan" style="
-    padding: 10px 20px; border: none; background: transparent; color: white;
+    padding: 10px 12px 10px 20px; border: none; background: transparent; color: white;
     cursor: pointer; font: inherit; font-weight: 600; transition: all 0.2s;
-  ">Scan</button>
+  ">Scan</button><label style="
+    padding: 10px 12px 10px 0; color: #64B5F6; cursor: pointer; font: inherit; font-weight: 600; font-size: 14px; display: flex; align-items: center;
+  "><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:2px;"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="13" r="4"/><path d="M5 3v2"/></svg><input type="file" accept="image/*" id="photoInput" style="display:none;" onchange="loadScanPhoto(this)">
+  </label>
 
   <button onclick="showScreen('loading')" class="ctrl-btn" data-screen="loading" style="
     padding: 10px 20px; border: none; background: transparent; color: #8E8E93;
@@ -995,12 +998,33 @@
     padding: 10px 20px; border: none; background: transparent; color: #8E8E93;
     cursor: pointer; font: inherit; font-weight: 600; transition: all 0.2s;
   ">Send</button>
-  <label style="
-    padding: 10px 16px; background: var(--primary-blue); color: white;
-    cursor: pointer; font: inherit; font-weight: 600; font-size: 14px;
-  ">Photo
-    <input type="file" accept="image/*" id="photoInput" style="display:none;" onchange="loadScanPhoto(this)">
-  </label>
+</div>
+<!-- Task input — right side panel -->
+<div id="taskPanel" style="
+  position: fixed; top: 80px; right: 20px;
+  z-index: 99998; background: #2C2C2E; color: white;
+  border-radius: 12px; padding: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  font-family: -apple-system, sans-serif; width: 240px;
+">
+  <div style="font-size:11px; font-weight:600; color:#8E8E93; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">Task Description</div>
+  <textarea id="taskInput" placeholder="Describe the estimate task..." style="
+    width: 100%; padding: 10px; border-radius: 8px; border: none;
+    background: #3A3A3C; color: white; font-size: 13px; font-family: inherit;
+    outline: none; resize: vertical; min-height: 60px; line-height: 1.4;
+  ">Ceiling leak repair — hole in drywall from water damage</textarea>
+  <div style="font-size:11px; font-weight:600; color:#8E8E93; text-transform:uppercase; letter-spacing:0.5px; margin: 10px 0 6px;">API Key</div>
+  <input id="apiKeyInput" type="password" placeholder="sk-..." style="
+    width: 100%; padding: 8px 10px; border-radius: 8px; border: none;
+    background: #3A3A3C; color: white; font-size: 12px; font-family: inherit;
+    outline: none;
+  ">
+  <button id="generateBtn" onclick="generateEstimate()" style="
+    width: 100%; margin-top: 10px; padding: 10px; border: none; border-radius: 10px;
+    background: #1565C0; color: white; font-size: 14px; font-weight: 700;
+    font-family: inherit; cursor: pointer;
+  ">Generate Estimate</button>
+  <div id="genStatus" style="font-size: 11px; color: #8E8E93; margin-top: 6px; text-align: center;"></div>
 </div>
 
 <script>
@@ -1600,6 +1624,208 @@ function sendEstimate() {
 
 </div><!-- /phone-scroll -->
 </div><!-- /phone-frame -->
+
+<script>
+async function generateEstimate() {
+  const taskDesc = document.getElementById('taskInput').value.trim();
+  const apiKey = document.getElementById('apiKeyInput').value.trim();
+  const status = document.getElementById('genStatus');
+  const btn = document.getElementById('generateBtn');
+
+  if (!taskDesc) { status.textContent = 'Enter a task description'; return; }
+  if (!apiKey) { status.textContent = 'Enter API key'; return; }
+
+  btn.textContent = 'Generating...';
+  btn.disabled = true;
+  status.textContent = 'Calling OpenAI gpt-4.1...';
+
+  const systemPrompt = `You are an experienced construction contractor assistant. Given a project description, generate a COMPLETE detailed cost estimate.
+
+RETURN EXACTLY THIS JSON FORMAT:
+{
+  "estimate_name": "Short name",
+  "project_type": "Type of work",
+  "confidence_level": "high",
+  "scope_items": ["Work item 1", "Work item 2", "Work item 3", "Work item 4"],
+  "line_items": [
+    {"description": "Item desc", "category": "Materials", "quantity": 1.0, "unit": "unit", "unit_cost": 10.00, "total_cost": 10.00}
+  ],
+  "labor_estimate": {
+    "hours_estimated": 10.0,
+    "workers_needed": 2,
+    "hourly_rate": 45.00,
+    "total_labor": 900.00
+  },
+  "total_estimate": {
+    "materials_cost": 500.00,
+    "labor_cost": 900.00,
+    "equipment_cost": 0.00,
+    "subtotal": 1400.00,
+    "markup_percent": 15,
+    "markup_amount": 210.00,
+    "tax_percent": 7,
+    "tax_amount": 112.70,
+    "grand_total": 1722.70
+  },
+  "notes": ["Note 1", "Note 2"],
+  "recommendations": ["Rec 1", "Rec 2"]
+}
+
+RULES:
+- 8-15 line items, realistic 2025-2026 prices
+- Category: "Materials", "Equipment", or "Supplies"
+- 3-5 scope items (short, clear)
+- 2-3 notes, 2-3 recommendations
+- Calculate all totals accurately
+- Return ONLY valid JSON`;
+
+  try {
+    const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + apiKey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'gpt-4.1',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: 'Generate a detailed estimate for: ' + taskDesc }
+        ],
+        max_tokens: 4000
+      })
+    });
+
+    if (!resp.ok) {
+      const err = await resp.text();
+      throw new Error('API ' + resp.status + ': ' + err.substring(0, 100));
+    }
+
+    const data = await resp.json();
+    const content = data.choices[0].message.content;
+
+    // Extract JSON
+    let jsonStr = content.replace(/```json/g, '').replace(/```/g, '').trim();
+    const start = jsonStr.indexOf('{');
+    const end = jsonStr.lastIndexOf('}');
+    jsonStr = jsonStr.substring(start, end + 1);
+    const est = JSON.parse(jsonStr);
+
+    // Update the estimate screen
+    applyEstimateToUI(est);
+
+    status.textContent = 'Done! Switch to Estimate to see results.';
+    btn.textContent = 'Generate Estimate';
+    btn.disabled = false;
+    showScreen('estimate');
+
+  } catch (e) {
+    status.textContent = 'Error: ' + e.message;
+    btn.textContent = 'Generate Estimate';
+    btn.disabled = false;
+  }
+}
+
+function fmt(n) {
+  return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function applyEstimateToUI(est) {
+  const t = est.total_estimate;
+  const l = est.labor_estimate;
+
+  // Summary card
+  document.querySelector('.summary-type').textContent = est.project_type;
+  document.querySelector('.summary-total').textContent = fmt(t.grand_total);
+  const pills = document.querySelectorAll('.summary-pill .value');
+  pills[0].textContent = fmt(t.materials_cost);
+  pills[1].textContent = fmt(t.labor_cost);
+  pills[2].textContent = Math.round(t.markup_percent) + '%';
+
+  // Scope
+  const scopeCard = document.querySelector('.section-title').closest('.card');
+  let scopeHTML = '<div class="section-header"><span class="section-title">Scope of Work</span></div>';
+  (est.scope_items || []).forEach(s => {
+    scopeHTML += '<div class="scope-item"><div class="scope-check"><svg viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M3 7l3 3 5-5.5"/></svg></div><span class="scope-text">' + s + '</span></div>';
+  });
+  scopeCard.innerHTML = scopeHTML;
+
+  // Labor
+  const laborPills = document.querySelectorAll('.labor-pill .value');
+  laborPills[0].textContent = l.hours_estimated.toFixed(1);
+  laborPills[1].textContent = l.workers_needed;
+  laborPills[2].textContent = '$' + Math.round(l.hourly_rate) + '/hr';
+  document.querySelector('.labor-total').textContent = 'Total: ' + fmt(l.total_labor);
+
+  // Materials
+  const matCards = document.querySelectorAll('.card');
+  let matCard;
+  matCards.forEach(c => {
+    const title = c.querySelector('.section-title');
+    if (title && title.textContent === 'Materials') matCard = c;
+  });
+  if (matCard) {
+    let matHTML = '<div class="section-header"><span class="section-title">Materials</span><div class="section-action"><svg viewBox="0 0 22 22" fill="currentColor"><path d="M11 4a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H5a1 1 0 110-2h5V5a1 1 0 011-1z"/></svg></div></div>';
+    (est.line_items || []).forEach(item => {
+      matHTML += '<div class="line-item"><div class="line-item-left"><div class="line-item-desc">' + item.description + '</div></div><div class="line-item-right"><div class="line-item-cost">' + fmt(item.total_cost) + '</div><div class="line-item-qty">' + item.quantity + ' ' + item.unit + '</div></div></div>';
+    });
+    matCard.innerHTML = matHTML;
+  }
+
+  // Totals
+  const totalRows = document.querySelectorAll('.total-row');
+  if (totalRows.length >= 7) {
+    totalRows[0].querySelector('.value').textContent = fmt(t.materials_cost);
+    totalRows[1].querySelector('.value').textContent = fmt(t.equipment_cost || 0);
+    totalRows[1].querySelector('.label').textContent = 'Equipment';
+    totalRows[2].querySelector('.value').textContent = fmt(0);
+    totalRows[2].querySelector('.label').textContent = 'Supplies';
+    totalRows[3].querySelector('.value').textContent = fmt(t.labor_cost);
+    totalRows[4].querySelector('.value').textContent = fmt(t.subtotal);
+    totalRows[5].querySelector('.value').textContent = fmt(t.markup_amount);
+    totalRows[5].querySelector('.label').textContent = 'Markup (' + Math.round(t.markup_percent) + '%)';
+    totalRows[6].querySelector('.value').textContent = fmt(t.tax_amount);
+    totalRows[6].querySelector('.label').textContent = 'Tax (' + Math.round(t.tax_percent) + '%)';
+  }
+  document.querySelector('.grand-total .value').textContent = fmt(t.grand_total);
+
+  // Notes
+  const notesCards = document.querySelectorAll('.card');
+  let notesCard;
+  notesCards.forEach(c => {
+    const title = c.querySelector('.section-title');
+    if (title && title.textContent === 'Notes') notesCard = c;
+  });
+  if (notesCard && est.notes) {
+    let notesHTML = '<div class="section-header"><span class="section-title">Notes</span></div>';
+    est.notes.forEach(n => {
+      notesHTML += '<div class="note-item"><svg class="note-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 3a1 1 0 110 2 1 1 0 010-2zm1 4v4a1 1 0 11-2 0V8a1 1 0 112 0z"/></svg><span class="note-text">' + n + '</span></div>';
+    });
+    notesCard.innerHTML = notesHTML;
+  }
+
+  // Send screen total
+  const sendTotal = document.querySelector('.send-preview-amount');
+  if (sendTotal) sendTotal.textContent = fmt(t.grand_total);
+  const sendPreviewTitle = document.querySelector('.send-preview-title');
+  if (sendPreviewTitle) sendPreviewTitle.textContent = est.estimate_name || est.project_type;
+  const sendGrandTotal = document.querySelector('.send-overlay .card');
+  if (sendGrandTotal) {
+    const totalEl = sendGrandTotal.querySelectorAll('div');
+    if (totalEl[1]) totalEl[1].textContent = fmt(t.grand_total);
+    if (totalEl[2]) totalEl[2].textContent = (est.estimate_name || est.project_type) + ' — ' + est.confidence_level + ' confidence';
+  }
+}
+
+// Load API key from localStorage
+document.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('ce_api_key');
+  if (saved) document.getElementById('apiKeyInput').value = saved;
+  document.getElementById('apiKeyInput').addEventListener('change', function() {
+    localStorage.setItem('ce_api_key', this.value);
+  });
+});
+</script>
 
 </body>
 </html>
