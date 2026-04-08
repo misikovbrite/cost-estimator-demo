@@ -1860,6 +1860,8 @@ RULES:
 
     // Update the estimate screen
     applyEstimateToUI(est);
+    // Re-apply UI language (section titles etc.)
+    applyUILanguage(currentLang);
 
     status.textContent = 'Done! Switch to Estimate to see results.';
     btn.textContent = 'Generate Estimate';
@@ -1874,7 +1876,9 @@ RULES:
 }
 
 function fmt(n) {
-  return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const symbols = { en: '$', es: '$', ar: 'ر.س', de: '€', fr: '€', 'pt-BR': 'R$' };
+  const sym = symbols[currentLang] || '$';
+  return sym + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function applyEstimateToUI(est) {
@@ -1889,30 +1893,37 @@ function applyEstimateToUI(est) {
   pills[1].textContent = fmt(t.labor_cost);
   pills[2].textContent = Math.round(t.markup_percent) + '%';
 
-  // Scope
+  // Scope — use localized title
+  const s_ = UI_STRINGS[currentLang] || UI_STRINGS.en;
   const scopeCard = document.querySelector('.section-title').closest('.card');
-  let scopeHTML = '<div class="section-header"><span class="section-title">Scope of Work</span></div>';
+  let scopeHTML = '<div class="section-header"><span class="section-title">' + s_.scope + '</span></div>';
   (est.scope_items || []).forEach(s => {
-    scopeHTML += '<div class="scope-item"><div class="scope-check"><svg viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M3 7l3 3 5-5.5"/></svg></div><span class="scope-text">' + s + '</span></div>';
+    const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-blue').trim();
+    scopeHTML += '<div class="scope-item"><div class="scope-check" style="background:' + accentColor + '"><svg viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M3 7l3 3 5-5.5"/></svg></div><span class="scope-text">' + s + '</span></div>';
   });
   scopeCard.innerHTML = scopeHTML;
+
+  // Confidence badge — localize
+  document.querySelectorAll('.confidence-badge').forEach(b => {
+    b.textContent = (est.confidence_level || 'high').charAt(0).toUpperCase() + (est.confidence_level || 'high').slice(1) + ' ' + s_.confidence;
+  });
 
   // Labor
   const laborPills = document.querySelectorAll('.labor-pill .value');
   laborPills[0].textContent = l.hours_estimated.toFixed(1);
   laborPills[1].textContent = l.workers_needed;
-  laborPills[2].textContent = '$' + Math.round(l.hourly_rate) + '/hr';
-  document.querySelector('.labor-total').textContent = 'Total: ' + fmt(l.total_labor);
+  laborPills[2].textContent = fmt(l.hourly_rate).replace('.00','') + '/hr';
+  document.querySelector('.labor-total').textContent = s_.total + ': ' + fmt(l.total_labor);
 
   // Materials
   const matCards = document.querySelectorAll('.card');
   let matCard;
   matCards.forEach(c => {
     const title = c.querySelector('.section-title');
-    if (title && title.textContent === 'Materials') matCard = c;
+    if (title && title.textContent.match(/Material|المواد|Materialien|Matériaux|Materiais/)) matCard = c;
   });
   if (matCard) {
-    let matHTML = '<div class="section-header"><span class="section-title">Materials</span><div class="section-action"><svg viewBox="0 0 22 22" fill="currentColor"><path d="M11 4a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H5a1 1 0 110-2h5V5a1 1 0 011-1z"/></svg></div></div>';
+    let matHTML = '<div class="section-header"><span class="section-title">' + s_.materials + '</span><div class="section-action"><svg viewBox="0 0 22 22" fill="currentColor"><path d="M11 4a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H5a1 1 0 110-2h5V5a1 1 0 011-1z"/></svg></div></div>';
     (est.line_items || []).forEach(item => {
       matHTML += '<div class="line-item"><div class="line-item-left"><div class="line-item-desc">' + item.description + '</div></div><div class="line-item-right"><div class="line-item-cost">' + fmt(item.total_cost) + '</div><div class="line-item-qty">' + item.quantity + ' ' + item.unit + '</div></div></div>';
     });
