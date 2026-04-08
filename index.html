@@ -1151,12 +1151,12 @@ function startScanAnimation() {
 // ─── Language ───
 let currentLang = 'en';
 const UI_STRINGS = {
-  en: { header: 'Cost Estimator', scope: 'Scope of Work', labor: 'Labor', materials: 'Materials', hours: 'Hours', workers: 'Workers', rate: 'Rate', total: 'Total', totals: 'Totals', subtotal: 'Subtotal', markup: 'Markup', tax: 'Tax', grandTotal: 'Grand Total', notes: 'Notes', send: 'Send Estimate', analyzing: 'Analyzing Photo...', building: 'Building Your Estimate...', confidence: 'confidence' },
-  es: { header: 'Estimador de Costos', scope: 'Alcance del Trabajo', labor: 'Mano de Obra', materials: 'Materiales', hours: 'Horas', workers: 'Trabajadores', rate: 'Tarifa', total: 'Total', totals: 'Totales', subtotal: 'Subtotal', markup: 'Margen', tax: 'Impuesto', grandTotal: 'Total General', notes: 'Notas', send: 'Enviar Presupuesto', analyzing: 'Analizando Foto...', building: 'Creando su Presupuesto...', confidence: 'confianza' },
-  ar: { header: 'مقدّر التكلفة', scope: 'نطاق العمل', labor: 'العمالة', materials: 'المواد', hours: 'ساعات', workers: 'عمّال', rate: 'السعر', total: 'المجموع', totals: 'الإجماليات', subtotal: 'المجموع الفرعي', markup: 'هامش الربح', tax: 'الضريبة', grandTotal: 'المجموع الكلي', notes: 'ملاحظات', send: 'إرسال التقدير', analyzing: '...تحليل الصورة', building: '...إنشاء التقدير', confidence: 'ثقة' },
-  de: { header: 'Kostenschätzer', scope: 'Arbeitsumfang', labor: 'Arbeit', materials: 'Materialien', hours: 'Stunden', workers: 'Arbeiter', rate: 'Stundensatz', total: 'Gesamt', totals: 'Summen', subtotal: 'Zwischensumme', markup: 'Aufschlag', tax: 'Steuer', grandTotal: 'Gesamtsumme', notes: 'Hinweise', send: 'Kostenvoranschlag senden', analyzing: 'Foto wird analysiert...', building: 'Kostenvoranschlag wird erstellt...', confidence: 'Vertrauen' },
-  fr: { header: 'Estimateur de Coûts', scope: 'Portée des Travaux', labor: "Main-d'œuvre", materials: 'Matériaux', hours: 'Heures', workers: 'Ouvriers', rate: 'Taux', total: 'Total', totals: 'Totaux', subtotal: 'Sous-total', markup: 'Marge', tax: 'Taxe', grandTotal: 'Total Général', notes: 'Notes', send: 'Envoyer le Devis', analyzing: 'Analyse de la Photo...', building: 'Création du Devis...', confidence: 'confiance' },
-  'pt-BR': { header: 'Estimador de Custos', scope: 'Escopo do Trabalho', labor: 'Mão de Obra', materials: 'Materiais', hours: 'Horas', workers: 'Trabalhadores', rate: 'Taxa', total: 'Total', totals: 'Totais', subtotal: 'Subtotal', markup: 'Margem', tax: 'Imposto', grandTotal: 'Total Geral', notes: 'Observações', send: 'Enviar Orçamento', analyzing: 'Analisando Foto...', building: 'Criando seu Orçamento...', confidence: 'confiança' }
+  en: { header: 'Cost Estimator', scope: 'Scope of Work', labor: 'Labor', materials: 'Materials', hours: 'Hours', workers: 'Workers', rate: 'Rate', total: 'Total', totals: 'Totals', subtotal: 'Subtotal', markup: 'Markup', tax: 'Tax', grandTotal: 'Grand Total', notes: 'Notes', send: 'Send Estimate', analyzing: 'Analyzing Photo...', building: 'Building Your Estimate...', confidence: 'confidence', clientInfo: 'Client Information', sendVia: 'Send via', includeIn: 'Include in estimate', timeline: 'Project Timeline', businessLogo: 'Business Logo', email: 'Email', sms: 'SMS', link: 'Link', pdfAttached: 'PDF attached', linkToView: 'Link to view', copyLink: 'Copy link', addOns: 'Suggested Add-Ons', estTotal: 'Estimate Total', clientName: 'Client name', emailAddr: 'Email address', phone: 'Phone number' },
+  es: { header: 'Estimador de Costos', scope: 'Alcance del Trabajo', labor: 'Mano de Obra', materials: 'Materiales', hours: 'Horas', workers: 'Trabajadores', rate: 'Tarifa', total: 'Total', totals: 'Totales', subtotal: 'Subtotal', markup: 'Margen', tax: 'Impuesto', grandTotal: 'Total General', notes: 'Notas', send: 'Enviar Presupuesto', analyzing: 'Analizando Foto...', building: 'Creando su Presupuesto...', confidence: 'confianza', clientInfo: 'Información del Cliente', sendVia: 'Enviar por', includeIn: 'Incluir en presupuesto', timeline: 'Cronograma', businessLogo: 'Logo de Empresa', email: 'Correo', sms: 'SMS', link: 'Enlace', pdfAttached: 'PDF adjunto', linkToView: 'Enlace para ver', copyLink: 'Copiar enlace', addOns: 'Servicios Adicionales', estTotal: 'Total del Presupuesto', clientName: 'Nombre del cliente', emailAddr: 'Correo electrónico', phone: 'Teléfono' },
+  ar: { header: 'مقدّر التكلفة', scope: 'نطاق العمل', labor: 'العمالة', materials: 'المواد', hours: 'ساعات', workers: 'عمّال', rate: 'السعر', total: 'المجموع', totals: 'الإجماليات', subtotal: 'المجموع الفرعي', markup: 'هامش الربح', tax: 'الضريبة', grandTotal: 'المجموع الكلي', notes: 'ملاحظات', send: 'إرسال التقدير', analyzing: '...تحليل الصورة', building: '...إنشاء التقدير', confidence: 'ثقة', clientInfo: 'معلومات العميل', sendVia: 'إرسال عبر', includeIn: 'تضمين في التقدير', timeline: 'الجدول الزمني', businessLogo: 'شعار الشركة', email: 'بريد إلكتروني', sms: 'رسالة نصية', link: 'رابط', pdfAttached: 'PDF مرفق', linkToView: 'رابط للعرض', copyLink: 'نسخ الرابط', addOns: 'خدمات إضافية', estTotal: 'إجمالي التقدير', clientName: 'اسم العميل', emailAddr: 'البريد الإلكتروني', phone: 'رقم الهاتف' },
+  de: { header: 'Kostenschätzer', scope: 'Arbeitsumfang', labor: 'Arbeit', materials: 'Materialien', hours: 'Stunden', workers: 'Arbeiter', rate: 'Stundensatz', total: 'Gesamt', totals: 'Summen', subtotal: 'Zwischensumme', markup: 'Aufschlag', tax: 'Steuer', grandTotal: 'Gesamtsumme', notes: 'Hinweise', send: 'Kostenvoranschlag senden', analyzing: 'Foto wird analysiert...', building: 'Kostenvoranschlag wird erstellt...', confidence: 'Vertrauen', clientInfo: 'Kundeninformation', sendVia: 'Senden über', includeIn: 'Im Angebot enthalten', timeline: 'Zeitplan', businessLogo: 'Firmenlogo', email: 'E-Mail', sms: 'SMS', link: 'Link', pdfAttached: 'PDF angehängt', linkToView: 'Link zum Ansehen', copyLink: 'Link kopieren', addOns: 'Zusatzleistungen', estTotal: 'Gesamtbetrag', clientName: 'Kundenname', emailAddr: 'E-Mail-Adresse', phone: 'Telefonnummer' },
+  fr: { header: 'Estimateur de Coûts', scope: 'Portée des Travaux', labor: "Main-d'œuvre", materials: 'Matériaux', hours: 'Heures', workers: 'Ouvriers', rate: 'Taux', total: 'Total', totals: 'Totaux', subtotal: 'Sous-total', markup: 'Marge', tax: 'Taxe', grandTotal: 'Total Général', notes: 'Notes', send: 'Envoyer le Devis', analyzing: 'Analyse de la Photo...', building: 'Création du Devis...', confidence: 'confiance', clientInfo: 'Informations Client', sendVia: 'Envoyer par', includeIn: 'Inclure dans le devis', timeline: 'Calendrier', businessLogo: 'Logo entreprise', email: 'E-mail', sms: 'SMS', link: 'Lien', pdfAttached: 'PDF joint', linkToView: 'Lien à consulter', copyLink: 'Copier le lien', addOns: 'Services Supplémentaires', estTotal: 'Total du Devis', clientName: 'Nom du client', emailAddr: 'Adresse e-mail', phone: 'Téléphone' },
+  'pt-BR': { header: 'Estimador de Custos', scope: 'Escopo do Trabalho', labor: 'Mão de Obra', materials: 'Materiais', hours: 'Horas', workers: 'Trabalhadores', rate: 'Taxa', total: 'Total', totals: 'Totais', subtotal: 'Subtotal', markup: 'Margem', tax: 'Imposto', grandTotal: 'Total Geral', notes: 'Observações', send: 'Enviar Orçamento', analyzing: 'Analisando Foto...', building: 'Criando seu Orçamento...', confidence: 'confiança', clientInfo: 'Informações do Cliente', sendVia: 'Enviar por', includeIn: 'Incluir no orçamento', timeline: 'Cronograma', businessLogo: 'Logo da Empresa', email: 'E-mail', sms: 'SMS', link: 'Link', pdfAttached: 'PDF anexado', linkToView: 'Link para visualizar', copyLink: 'Copiar link', addOns: 'Serviços Adicionais', estTotal: 'Total do Orçamento', clientName: 'Nome do cliente', emailAddr: 'E-mail', phone: 'Telefone' }
 };
 const LANG_NAMES = { en: 'English', es: 'Spanish', ar: 'Arabic', de: 'German', fr: 'French', 'pt-BR': 'Brazilian Portuguese' };
 
@@ -1206,6 +1206,44 @@ function applyUILanguage(lang) {
   // Loading & scan
   const loadT = document.getElementById('loadingTitle');
   if (loadT) loadT.textContent = s.building;
+
+  // Send screen labels
+  document.querySelectorAll('.send-field-label').forEach(l => {
+    const t = l.textContent;
+    if (t.match(/Client|Cliente|عميل|Kunden|Informations/i)) l.textContent = s.clientInfo;
+    if (t.match(/Send via|Enviar por|إرسال عبر|Senden über|Envoyer par/i)) l.textContent = s.sendVia;
+    if (t.match(/Include|Incluir|تضمين|enthalten|Inclure/i)) l.textContent = s.includeIn;
+    if (t.match(/Add-On|Adicional|إضافية|Zusatz|Supplémentaire|Serviços/i)) l.textContent = s.addOns;
+  });
+
+  // Send toggle texts
+  document.querySelectorAll('.send-toggle-text').forEach(t => {
+    const txt = t.textContent;
+    if (txt.match(/Scope|Alcance|نطاق|Arbeitsumfang|Portée|Escopo/)) t.textContent = s.scope;
+    if (txt.match(/Timeline|Cronograma|الجدول|Zeitplan|Calendrier/)) t.textContent = s.timeline;
+    if (txt.match(/Notes|Notas|ملاحظات|Hinweise|Observações/)) t.textContent = s.notes;
+    if (txt.match(/Logo|شعار/)) t.textContent = s.businessLogo;
+  });
+
+  // Send method labels
+  const methodLabels = document.querySelectorAll('.send-method-label');
+  const methodDescs = document.querySelectorAll('.send-method-desc');
+  if (methodLabels[0]) methodLabels[0].textContent = s.email;
+  if (methodLabels[1]) methodLabels[1].textContent = s.sms;
+  if (methodLabels[2]) methodLabels[2].textContent = s.link;
+  if (methodDescs[0]) methodDescs[0].textContent = s.pdfAttached;
+  if (methodDescs[1]) methodDescs[1].textContent = s.linkToView;
+  if (methodDescs[2]) methodDescs[2].textContent = s.copyLink;
+
+  // Input placeholders
+  const inputs = document.querySelectorAll('.send-input');
+  if (inputs[0]) inputs[0].placeholder = s.clientName;
+  if (inputs[1]) inputs[1].placeholder = s.emailAddr;
+  if (inputs[2]) inputs[2].placeholder = s.phone;
+
+  // Estimate total label
+  const etLabel = document.querySelector('.send-overlay .card div[style*="font-size:14px"]');
+  if (etLabel) etLabel.textContent = s.estTotal;
 }
 
 // ─── Color ───
