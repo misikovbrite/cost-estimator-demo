@@ -1115,9 +1115,152 @@
       top: auto !important;
     }
   }
+
+  /* Left nav */
+  #leftNav {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 52px;
+    background: #1C1C1E; z-index: 100000;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 14px 0; gap: 4px;
+    border-right: 1px solid #2C2C2E;
+  }
+  .lnav-btn {
+    width: 42px; padding: 8px 0; border-radius: 10px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 2px; cursor: pointer; border: none; background: transparent;
+    color: #636366; font-family: inherit; font-size: 9px; font-weight: 600;
+    transition: all 0.15s;
+  }
+  .lnav-btn:hover { background: #2C2C2E; color: #AAA; }
+  .lnav-btn.lnav-active { background: #0A84FF; color: white; }
+  .lnav-btn svg { width: 18px; height: 18px; }
+
+  #hooksCenter {
+    display: none; position: fixed;
+    left: 52px; top: 0; right: 260px; bottom: 0;
+    overflow-y: auto; padding: 30px;
+    z-index: 99990; background: #2C2C2E;
+    scrollbar-width: none;
+  }
+  #hooksCenter::-webkit-scrollbar { display: none; }
+  .hk-grid {
+    display: flex; gap: 16px; overflow-x: auto; padding-bottom: 10px;
+    scrollbar-width: none;
+  }
+  .hk-grid::-webkit-scrollbar { display: none; }
+  .hk-card { min-width: 180px; max-width: 200px; flex-shrink: 0; }
+  .hk-card {
+    background: #3A3A3C; border-radius: 14px; overflow: hidden;
+    cursor: pointer; transition: transform 0.15s;
+  }
+  .hk-card:hover { transform: scale(1.03); }
+  .hk-card video { width: 100%; aspect-ratio: 9/16; object-fit: cover; display: block; }
+  .hk-card-info { padding: 8px 10px; }
+  .hk-card-name { font-size: 13px; font-weight: 600; color: white; }
+  .hk-card-meta { font-size: 10px; color: #8E8E93; margin-top: 2px; }
+
+  @media (max-width: 700px) {
+    #leftNav { display: none !important; }
+    #hooksCenter { display: none !important; }
+  }
 </style>
 </head>
 <body>
+
+<!-- Left nav -->
+<div id="leftNav">
+  <button class="lnav-btn lnav-active" onclick="switchSection('screens')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    Screens
+  </button>
+  <button class="lnav-btn" onclick="switchSection('hooks')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    Hooks
+  </button>
+  <button class="lnav-btn" onclick="switchSection('creative')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+    Creative
+  </button>
+</div>
+
+<!-- Hooks center gallery (hidden by default) -->
+<div id="hooksCenter">
+  <div style="font-size:20px; font-weight:700; color:white; margin-bottom:6px;">Ceiling Leak — Creative Assets</div>
+  <div style="font-size:13px; color:#8E8E93; margin-bottom:16px;">Hook → Still Frame → App Demo → Repair Resolution</div>
+  <div class="hk-grid">
+    <div class="hk-card" onclick="window.open('hooks/hook-ceiling-leak-01.mp4','_blank')">
+      <video src="hooks/hook-ceiling-leak-01.mp4" muted preload="metadata" onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0;"></video>
+      <div class="hk-card-info">
+        <div class="hk-card-name">Ceiling Leak</div>
+        <div class="hk-card-meta">4s · Veo 3.1 · 720×1280</div>
+      </div>
+    </div>
+    <div class="hk-card" onclick="useScanFrame('hooks/hook-ceiling-leak-01-frame.png')" style="position:relative;">
+      <img src="hooks/hook-ceiling-leak-01-frame.png" style="width:100%; aspect-ratio:9/16; object-fit:cover; display:block;">
+      <div style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.6); padding:3px 8px; border-radius:6px; font-size:10px; color:white; font-weight:600;">STILL</div>
+      <div class="hk-card-info">
+        <div class="hk-card-name">Ceiling Leak — Frame</div>
+        <div class="hk-card-meta">PNG · Click to use in Scan</div>
+      </div>
+    </div>
+    <div class="hk-card" onclick="window.open('hooks/hook-ceiling-repair-timelapse.mp4','_blank')">
+      <video src="hooks/hook-ceiling-repair-timelapse.mp4" muted preload="metadata" onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0;"></video>
+      <div style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.6); padding:3px 8px; border-radius:6px; font-size:10px; color:white; font-weight:600;">REPAIR</div>
+      <div class="hk-card-info">
+        <div class="hk-card-name">Ceiling Repair</div>
+        <div class="hk-card-meta">5s · Gen-4 Turbo · 720×1280</div>
+      </div>
+    </div>
+  </div>
+  <div style="color:#636366; font-size:13px; margin-top:20px; text-align:center;">More hooks coming soon</div>
+</div>
+
+<!-- Creative editor (center, hidden by default) -->
+<div id="creativeCenter" style="
+  display: none; position: fixed;
+  left: 52px; top: 0; right: 260px; bottom: 0;
+  overflow-y: auto; padding: 30px 30px 100px;
+  z-index: 99990; background: #1C1C1E;
+  scrollbar-width: none; color: white;
+  font-family: -apple-system, sans-serif;
+">
+<style>#creativeCenter::-webkit-scrollbar{display:none;}</style>
+
+  <div style="font-size:20px; font-weight:700; margin-bottom:4px;">Creative Editor</div>
+  <div style="font-size:13px; color:#8E8E93; margin-bottom:24px;">Drag segments to reorder · click to preview · total: <span id="crTotalTime">12.0</span>s</div>
+
+  <!-- Video strip (horizontal filmstrip) -->
+  <div id="crStrip" style="display:flex; gap:2px; margin-bottom:24px; overflow-x:auto; scrollbar-width:none; padding-bottom:8px;">
+  </div>
+
+  <!-- Timeline bars -->
+  <div style="font-size:11px; font-weight:600; color:#8E8E93; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">Timeline</div>
+  <div id="crTimeline" style="position:relative; background:#2C2C2E; border-radius:12px; padding:16px; min-height:300px;">
+  </div>
+
+  <!-- Buttons -->
+  <div style="margin-top:20px; display:flex; gap:8px; flex-wrap:wrap;">
+    <button onclick="exportCreativeConfig()" style="padding:10px 18px; border:none; border-radius:10px; background:#3A3A3C; color:white; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;">Export JSON</button>
+    <a href="hooks/creative-ceiling-leak-final.mp4" download style="padding:10px 18px; border:none; border-radius:10px; background:#2E7D32; color:white; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; text-decoration:none; display:inline-block;">⬇ Download MP4</a>
+  </div>
+</div>
+
+<!-- Creative right preview panel (replaces taskPanel when Creative is active) -->
+<div id="creativePreview" style="
+  display:none; position:fixed; top:0; right:0; bottom:0; width:300px;
+  z-index:99998; background:#1C1C1E; border-left:1px solid #2C2C2E;
+  padding:20px; overflow-y:auto; scrollbar-width:none;
+  font-family:-apple-system,sans-serif; color:white;
+">
+<style>#creativePreview::-webkit-scrollbar{display:none;}</style>
+  <div style="font-size:11px; font-weight:600; color:#8E8E93; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:12px;">Preview</div>
+  <video id="crVideo" src="hooks/creative-ceiling-leak-final.mp4" style="width:100%; border-radius:12px; background:#000; margin-bottom:16px;" controls></video>
+  <button onclick="playCreativePreview()" style="width:100%; padding:12px; border:none; border-radius:10px; background:#0A84FF; color:white; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; margin-bottom:8px;">▶ Play All</button>
+  <button onclick="renderCreativeFFmpeg()" style="width:100%; padding:12px; border:none; border-radius:10px; background:#C62828; color:white; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; margin-bottom:10px;">🎬 Render</button>
+
+  <div style="font-size:11px; font-weight:600; color:#8E8E93; text-transform:uppercase; letter-spacing:0.5px; margin:16px 0 8px;">Segments</div>
+  <div id="crSegList"></div>
+</div>
 
 <!-- Right side panel (screens + settings) -->
 <!-- Toggle tab for panel -->
@@ -1458,6 +1601,198 @@ function selectColor(dot) {
   document.querySelectorAll('.send-cta').forEach(el => el.style.background = c);
   const gb = document.getElementById('generateBtn');
   if (gb) gb.style.background = c;
+}
+
+// ─── Use scan frame from hook ───
+function useScanFrame(src) {
+  const img = document.getElementById('scanImage');
+  const placeholder = document.getElementById('scanPlaceholder');
+  img.src = src;
+  img.style.display = 'block';
+  if (placeholder) placeholder.style.display = 'none';
+  // Switch to Screens → Scan
+  switchSection('screens');
+  showScreen('scan');
+}
+
+// ─── Section switch (left nav) ───
+function switchSection(section) {
+  document.querySelectorAll('.lnav-btn').forEach(b => b.classList.remove('lnav-active'));
+  event.currentTarget.classList.add('lnav-active');
+  document.getElementById('phoneFrame').style.display = section === 'screens' ? 'flex' : 'none';
+  document.getElementById('hooksCenter').style.display = section === 'hooks' ? 'block' : 'none';
+  document.getElementById('creativeCenter').style.display = section === 'creative' ? 'block' : 'none';
+  document.getElementById('taskPanel').style.display = section === 'creative' ? 'none' : '';
+  document.getElementById('panelToggle').style.display = section === 'creative' ? 'none' : '';
+  document.getElementById('creativePreview').style.display = section === 'creative' ? 'block' : 'none';
+  if (section === 'creative') renderCreativeEditor();
+}
+
+// ─── Creative Editor ───
+const creativeSegments = [
+  { id: 'hook', label: 'Hook', src: 'hooks/hook-ceiling-leak-01.mp4', type: 'video', duration: 2, color: '#C62828' },
+  { id: 'flash', label: 'Flash + Photo', src: null, type: 'effect', duration: 0.5, color: '#616161' },
+  { id: 'scan', label: 'Scan', src: 'hooks/demo-scan.mp4', type: 'demo', duration: 2, color: '#1565C0' },
+  { id: 'analysis', label: 'Analysis', src: 'hooks/demo-loading.mp4', type: 'demo', duration: 1.5, color: '#1976D2' },
+  { id: 'estimate', label: 'Estimate', src: 'hooks/demo-estimate.mp4', type: 'demo', duration: 3, color: '#2E7D32' },
+  { id: 'repair', label: 'Repair', src: 'hooks/hook-ceiling-repair-timelapse.mp4', type: 'video', duration: 3, color: '#388E3C' },
+];
+
+function renderCreativeEditor() {
+  const strip = document.getElementById('crStrip');
+  const timeline = document.getElementById('crTimeline');
+  const totalEl = document.getElementById('crTotalTime');
+  const total = creativeSegments.reduce((s, seg) => s + seg.duration, 0);
+  totalEl.textContent = total.toFixed(1);
+
+  // Filmstrip
+  strip.innerHTML = creativeSegments.map((seg, i) => {
+    const w = Math.max(80, seg.duration * 60);
+    let content = '';
+    if (seg.src) {
+      content = '<video src="' + seg.src + '" style="width:100%;height:100%;object-fit:cover;" muted preload="metadata" onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0;"></video>';
+    } else if (seg.type === 'effect') {
+      content = '<div style="width:100%;height:100%;background:linear-gradient(white,#ddd);display:flex;align-items:center;justify-content:center;font-size:24px;">⚡</div>';
+    }
+    return '<div style="flex-shrink:0;width:'+w+'px;height:120px;border-radius:10px;overflow:hidden;position:relative;cursor:pointer;border:2px solid '+seg.color+';">' +
+      content +
+      '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);padding:4px 6px;"><div style="font-size:10px;font-weight:600;color:white;">'+seg.label+'</div><div style="font-size:9px;color:#AAA;">'+seg.duration+'s</div></div>' +
+    '</div>';
+  }).join('');
+
+  // Timeline bars
+  const pxPerSec = 60;
+  timeline.innerHTML = '<div style="position:relative;height:'+(creativeSegments.length * 46 + 30)+'px;">' +
+    // Ruler
+    Array.from({length: Math.ceil(total) + 1}, (_, s) =>
+      '<div style="position:absolute;left:'+(s*pxPerSec)+'px;top:0;font-size:10px;color:#636366;">'+s+'s</div>'
+    ).join('') +
+    // Bars
+    creativeSegments.map((seg, i) => {
+      const startSec = creativeSegments.slice(0, i).reduce((s, x) => s + x.duration, 0);
+      const left = startSec * pxPerSec;
+      const width = seg.duration * pxPerSec;
+      return '<div class="cr-bar" data-idx="'+i+'" style="position:absolute;left:'+left+'px;top:'+(20 + i*46)+'px;width:'+width+'px;height:38px;background:'+seg.color+';border-radius:8px;display:flex;align-items:center;padding:0 10px;font-size:11px;font-weight:600;color:white;cursor:ew-resize;user-select:none;box-shadow:0 2px 6px rgba(0,0,0,0.3);">' +
+        '<span style="pointer-events:none;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">'+seg.label+'</span>' +
+        '<span style="pointer-events:none;font-size:10px;opacity:0.7;margin-left:6px;">'+seg.duration.toFixed(1)+'s</span>' +
+      '</div>';
+    }).join('') +
+  '</div>';
+
+  // Segment list in right panel
+  const segList = document.getElementById('crSegList');
+  if (segList) {
+    segList.innerHTML = creativeSegments.map((seg, i) =>
+      '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #2C2C2E;">' +
+        '<div style="width:10px;height:10px;border-radius:50%;background:'+seg.color+';flex-shrink:0;"></div>' +
+        '<div style="flex:1;font-size:12px;font-weight:600;">'+seg.label+'</div>' +
+        '<div style="font-size:11px;color:#8E8E93;">'+seg.duration.toFixed(1)+'s</div>' +
+      '</div>'
+    ).join('');
+  }
+
+  // Make bars resizable
+  document.querySelectorAll('.cr-bar').forEach(bar => {
+    let startX, origDur;
+    bar.addEventListener('mousedown', e => {
+      const idx = parseInt(bar.dataset.idx);
+      startX = e.clientX;
+      origDur = creativeSegments[idx].duration;
+      const onMove = ev => {
+        const dx = (ev.clientX - startX) / pxPerSec;
+        creativeSegments[idx].duration = Math.max(0.3, Math.round((origDur + dx) * 10) / 10);
+        renderCreativeEditor();
+      };
+      const onUp = () => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      };
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+      e.preventDefault();
+    });
+  });
+}
+
+function playCreativePreview() {
+  const video = document.getElementById('crVideo');
+  const videoSegs = creativeSegments.filter(s => s.src);
+  if (videoSegs.length === 0) return;
+
+  let idx = 0;
+
+  function playNext() {
+    if (idx >= videoSegs.length) { idx = 0; video.pause(); return; }
+    const seg = videoSegs[idx];
+    video.src = seg.src;
+    video.currentTime = 0;
+    video.play();
+    // Highlight in segment list
+    document.querySelectorAll('#crSegList > div').forEach((el, i) => {
+      const segAll = creativeSegments;
+      el.style.background = segAll.indexOf(videoSegs[idx]) === i ? '#0A84FF22' : 'transparent';
+    });
+    const timer = setTimeout(() => { video.pause(); idx++; playNext(); }, seg.duration * 1000);
+    video.onended = () => { clearTimeout(timer); idx++; playNext(); };
+  }
+  playNext();
+}
+
+async function renderCreativeFFmpeg() {
+  var btn = document.querySelector('#creativePreview button[onclick*="render"]');
+  btn.textContent = '⏳ Starting...';
+  btn.disabled = true;
+
+  try {
+    var startRes = await fetch('render.php', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ segments: creativeSegments }),
+    });
+    var startData = await startRes.json();
+    console.log('render start:', startData);
+
+    for (var i = 0; i < 60; i++) {
+      await new Promise(function(r) { setTimeout(r, 3000); });
+      var pollRes = await fetch('render.php?check=' + Date.now());
+      var pollText = await pollRes.text();
+      console.log('poll:', pollText);
+      try { var pollData = JSON.parse(pollText); } catch(e) { continue; }
+
+      if (pollData.status === 'done' && pollData.url) {
+        btn.textContent = '✓ Done!';
+        var video = document.getElementById('crVideo');
+        video.src = pollData.url;
+        video.load();
+        btn.disabled = false;
+        setTimeout(function() { btn.textContent = '🎬 Render'; }, 3000);
+        return;
+      }
+      if (pollData.status === 'error') { throw new Error('Render failed on server'); }
+      btn.textContent = '⏳ Rendering... ' + ((i+1)*3) + 's';
+    }
+    throw new Error('Timeout after 3 min');
+  } catch (e) {
+    btn.textContent = '✗ ' + e.message;
+    console.error('render error:', e);
+  }
+  btn.disabled = false;
+  setTimeout(function() { btn.textContent = '🎬 Render'; }, 4000);
+}
+
+function exportCreativeConfig() {
+  let t = 0;
+  const scenes = creativeSegments.map(seg => {
+    const start = t;
+    t += seg.duration;
+    return { id: seg.id, label: seg.label, type: seg.type, src: seg.src, startSeconds: Math.round(start*10)/10, endSeconds: Math.round(t*10)/10, duration: seg.duration, color: seg.color };
+  });
+  const json = JSON.stringify({ fps: 30, totalDuration: t, scenes }, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'creative-config-' + Date.now() + '.json';
+  a.click();
 }
 
 // ─── Panel toggle ───
